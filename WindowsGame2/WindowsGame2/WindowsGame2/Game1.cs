@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -13,6 +14,7 @@ namespace WindowsGame2
 		SpriteBatch spriteBatch;
 
 		private Sprite _player;
+		private Vector2 targetPosition;
 
 		public Game1()
 		{
@@ -28,7 +30,13 @@ namespace WindowsGame2
 		/// </summary>
 		protected override void Initialize()
 		{
-			_player = new Sprite();
+			IsMouseVisible = true;
+
+			_player = new Sprite
+			{
+				Position = new Vector2(0, 0),
+				Velocity = 3
+			};
 
 			base.Initialize();
 		}
@@ -65,10 +73,41 @@ namespace WindowsGame2
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
 				this.Exit();
 
-			// TODO: Add your update logic here
-			_player.Position = new Rectangle(0, 0, _player.Texture.Width, _player.Texture.Height);
+			var currentMouseState = Mouse.GetState();
+			Debug.WriteLine(currentMouseState);
+				
+			if (currentMouseState.LeftButton == ButtonState.Pressed)
+			{
+				targetPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
+			}
+
+			if (PlayerHasReachedPosition())
+			{
+				Debug.WriteLine("Reached the spot!");
+				_player.Position = new Vector2(targetPosition.X, _player.Position.Y);
+			}
+			else if (_player.Position.X > targetPosition.X)
+			{
+				Debug.WriteLine("Player position is greater");
+				_player.Position = new Vector2(_player.Position.X - _player.Velocity, _player.Position.Y);
+			}
+			else if (_player.Position.X < targetPosition.X)
+			{
+				Debug.WriteLine("Player position is less");
+				_player.Position = new Vector2(_player.Position.X + _player.Velocity, _player.Position.Y);
+			}
 
 			base.Update(gameTime);
+		}
+
+		private bool PlayerHasReachedPosition()
+		{
+			if (_player.Position.X > targetPosition.X)
+			{
+				return _player.Position.X - targetPosition.X <= _player.Velocity;
+			}
+
+			return _player.Position.X + targetPosition.X <= _player.Velocity;
 		}
 
 		/// <summary>

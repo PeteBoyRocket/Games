@@ -7,6 +7,8 @@ namespace WindowsGame2
 	{
 		public Texture2D Texture { get; set; }
 
-		public Rectangle Position { get; set; }
+		public Vector2 Position { get; set; }
+
+		public int Velocity { get; set; }
 	}
 }
