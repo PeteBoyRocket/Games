@@ -155,7 +155,7 @@ namespace WindowsGame2
 
 			spriteBatch.Begin();
 
-			spriteBatch.Draw(_player.Texture, _player.Position, Color.White);
+			spriteBatch.Draw(_player.Texture, _player.CentrePoint, Color.White);
 
 			spriteBatch.End();
 
