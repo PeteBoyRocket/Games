@@ -14,7 +14,7 @@ namespace WindowsGame2
 		SpriteBatch spriteBatch;
 
 		private Sprite _player;
-		private Vector2 targetPosition;
+		private Vector2 _targetPosition;
 
 		public Game1()
 		{
@@ -35,7 +35,7 @@ namespace WindowsGame2
 			_player = new Sprite
 			{
 				Position = new Vector2(0, 0),
-				Velocity = 3
+				Velocity = new Vector2(3, 1)
 			};
 
 			base.Initialize();
@@ -75,39 +75,74 @@ namespace WindowsGame2
 
 			var currentMouseState = Mouse.GetState();
 			Debug.WriteLine(currentMouseState);
-				
+
 			if (currentMouseState.LeftButton == ButtonState.Pressed)
 			{
-				targetPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
+				_targetPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
 			}
 
-			if (PlayerHasReachedPosition())
-			{
-				Debug.WriteLine("Reached the spot!");
-				_player.Position = new Vector2(targetPosition.X, _player.Position.Y);
-			}
-			else if (_player.Position.X > targetPosition.X)
-			{
-				Debug.WriteLine("Player position is greater");
-				_player.Position = new Vector2(_player.Position.X - _player.Velocity, _player.Position.Y);
-			}
-			else if (_player.Position.X < targetPosition.X)
-			{
-				Debug.WriteLine("Player position is less");
-				_player.Position = new Vector2(_player.Position.X + _player.Velocity, _player.Position.Y);
-			}
+			SetPlayerPosition(currentMouseState);
 
 			base.Update(gameTime);
 		}
 
-		private bool PlayerHasReachedPosition()
+		private void SetPlayerPosition(MouseState currentMouseState)
 		{
-			if (_player.Position.X > targetPosition.X)
+			var x = 0f;
+
+			if (_player.Position.X >= _targetPosition.X)
 			{
-				return _player.Position.X - targetPosition.X <= _player.Velocity;
+				var change = _player.Position.X - _player.Velocity.X;
+				if (change < _targetPosition.X)
+				{
+					x = _targetPosition.X;
+				}
+				else
+				{
+					x = change;
+				}
+			}
+			else if (_player.Position.X < _targetPosition.X)
+			{
+				var change = _player.Position.X + _player.Velocity.X;
+				if (change > _targetPosition.X)
+				{
+					x = _targetPosition.X;
+				}
+				else
+				{
+					x = change;
+				}
 			}
 
-			return _player.Position.X + targetPosition.X <= _player.Velocity;
+			var y = 0f;
+
+			if (_player.Position.Y >= _targetPosition.Y)
+			{
+				var change = _player.Position.Y - _player.Velocity.Y;
+				if (change < _targetPosition.Y)
+				{
+					y = _targetPosition.Y;
+				}
+				else
+				{
+					y = change;
+				}
+			}
+			else if (_player.Position.Y < _targetPosition.Y)
+			{
+				var change = _player.Position.Y + _player.Velocity.Y;
+				if (change > _targetPosition.Y)
+				{
+					y = _targetPosition.Y;
+				}
+				else
+				{
+					y = change;
+				}
+			}
+
+			_player.Position = new Vector2(x, y);
 		}
 
 		/// <summary>
