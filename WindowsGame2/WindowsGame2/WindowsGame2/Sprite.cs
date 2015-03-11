@@ -26,14 +26,78 @@ namespace WindowsGame2
 
 		public Vector2 Position { get; set; }
 
+		public Vector2 TargetPosition { get; set; }
+
 		public Vector2 CentrePoint
 		{
 			get
 			{
-				return new Vector2(Position.X - _xCentreOffset, Position.Y - _yCentreOffset);
+				return new Vector2(Position.X + _xCentreOffset, Position.Y + _yCentreOffset);
 			}
 		}
 
 		public Vector2 Velocity { get; set; }
+
+		public void Update(GameTime gameTime)
+		{
+			var xVelocity = Velocity.X * gameTime.ElapsedGameTime.Milliseconds;
+
+			var x = 0f;
+
+			if (Position.X >= TargetPosition.X)
+			{
+				var change = Position.X - xVelocity;
+				if (change < TargetPosition.X)
+				{
+					x = TargetPosition.X;
+				}
+				else
+				{
+					x = change;
+				}
+			}
+			else if (Position.X < TargetPosition.X)
+			{
+				var change = Position.X + xVelocity;
+				if (change > TargetPosition.X)
+				{
+					x = TargetPosition.X;
+				}
+				else
+				{
+					x = change;
+				}
+			}
+
+			var yVelocity = Velocity.Y * gameTime.ElapsedGameTime.Milliseconds;
+			var y = 0f;
+
+			if (Position.Y >= TargetPosition.Y)
+			{
+				var change = Position.Y - yVelocity;
+				if (change < TargetPosition.Y)
+				{
+					y = TargetPosition.Y;
+				}
+				else
+				{
+					y = change;
+				}
+			}
+			else if (Position.Y < TargetPosition.Y)
+			{
+				var change = Position.Y + yVelocity;
+				if (change > TargetPosition.Y)
+				{
+					y = TargetPosition.Y;
+				}
+				else
+				{
+					y = change;
+				}
+			}
+
+			Position = new Vector2(x, y);
+		}
 	}
 }

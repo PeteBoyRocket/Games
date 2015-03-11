@@ -32,11 +32,6 @@ namespace WindowsGame2
 		{
 			IsMouseVisible = true;
 
-			_player = new Sprite
-			{
-				Position = new Vector2(0, 0),
-				Velocity = new Vector2(3, 1)
-			};
 
 			base.Initialize();
 		}
@@ -50,7 +45,16 @@ namespace WindowsGame2
 			// Create a new SpriteBatch, which can be used to draw textures.
 			spriteBatch = new SpriteBatch(GraphicsDevice);
 
+			_player = new Sprite
+			{
+				Velocity = new Vector2(0.15f, 0.1f)
+			};
+
 			_player.Texture = Content.Load<Texture2D>("player");
+
+			_player.Position = new Vector2(-_player.Texture.Width, GraphicsDevice.Viewport.Height - _player.Texture.Height - 10);
+
+			_player.TargetPosition = new Vector2(0, _player.Position.Y);
 		}
 
 		/// <summary>
@@ -81,68 +85,9 @@ namespace WindowsGame2
 				_targetPosition = new Vector2(currentMouseState.X, currentMouseState.Y);
 			}
 
-			SetPlayerPosition(currentMouseState);
+			_player.Update(gameTime);
 
 			base.Update(gameTime);
-		}
-
-		private void SetPlayerPosition(MouseState currentMouseState)
-		{
-			var x = 0f;
-
-			if (_player.Position.X >= _targetPosition.X)
-			{
-				var change = _player.Position.X - _player.Velocity.X;
-				if (change < _targetPosition.X)
-				{
-					x = _targetPosition.X;
-				}
-				else
-				{
-					x = change;
-				}
-			}
-			else if (_player.Position.X < _targetPosition.X)
-			{
-				var change = _player.Position.X + _player.Velocity.X;
-				if (change > _targetPosition.X)
-				{
-					x = _targetPosition.X;
-				}
-				else
-				{
-					x = change;
-				}
-			}
-
-			var y = 0f;
-
-			if (_player.Position.Y >= _targetPosition.Y)
-			{
-				var change = _player.Position.Y - _player.Velocity.Y;
-				if (change < _targetPosition.Y)
-				{
-					y = _targetPosition.Y;
-				}
-				else
-				{
-					y = change;
-				}
-			}
-			else if (_player.Position.Y < _targetPosition.Y)
-			{
-				var change = _player.Position.Y + _player.Velocity.Y;
-				if (change > _targetPosition.Y)
-				{
-					y = _targetPosition.Y;
-				}
-				else
-				{
-					y = change;
-				}
-			}
-
-			_player.Position = new Vector2(x, y);
 		}
 
 		/// <summary>
@@ -155,7 +100,7 @@ namespace WindowsGame2
 
 			spriteBatch.Begin();
 
-			spriteBatch.Draw(_player.Texture, _player.CentrePoint, Color.White);
+			spriteBatch.Draw(_player.Texture, _player.Position, Color.White);
 
 			spriteBatch.End();
 
